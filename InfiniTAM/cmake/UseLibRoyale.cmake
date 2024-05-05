@@ -2,7 +2,7 @@
 # UseLibRoyale.cmake #
 ######################
 
-OPTION(WITH_LIBROYALE "Build with LibRoyale support?" OFF)
+OPTION(WITH_LIBROYALE "Build with LibRoyale support?" ON)
 
 IF(WITH_LIBROYALE)
   FIND_PACKAGE(LibRoyale REQUIRED)
