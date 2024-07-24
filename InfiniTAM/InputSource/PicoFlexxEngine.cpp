@@ -31,6 +31,7 @@ public:
 	vector<Vector4u> rgbImage;
 	vector<short> depthImage;
 	mutex mtx;
+	chrono::time_point<chrono::system_clock> lastFrameTime = chrono::system_clock::now();
 
 	explicit PrivateData(PicoFlexxEngine *pfe) : engine(pfe), depthImage(0) {}
 	~PrivateData() {}
@@ -41,6 +42,9 @@ public:
 
 void PicoFlexxEngine::PrivateData::onNewData(const DepthData *data)
 {
+	auto currentFrameTime = std::chrono::system_clock::now();
+	// std::cout << "Time since first frame: " << std::chrono::duration<double>(currentFrameTime - lastFrameTime).count() << std::endl;
+	//this->lastFrameTime = currentFrameTime;
 	lock_guard<mutex> lock(mtx);
 
 	// handle the grayscale image
@@ -86,9 +90,10 @@ PicoFlexxEngine::PicoFlexxEngine(const char *calibFilename, const char *deviceUR
 	data = new PrivateData(this);
 
 	// the camera manager will query for a connected camera
+	CameraManager manager;
+	bool use_local_sensor = false;
+	if (use_local_sensor)
 	{
-		CameraManager manager;
-
 		royale::Vector<royale::String> camlist = manager.getConnectedCameraList();
 		cout << "Detected " << camlist.size() << " camera(s)." << endl;
 		if (!camlist.empty())
@@ -97,13 +102,19 @@ PicoFlexxEngine::PicoFlexxEngine(const char *calibFilename, const char *deviceUR
 			data->cameraDevice = manager.createCamera(camlist[0]);
 		}
 	}
-	// the camera device is now available and CameraManager can be deallocated here
-
-	if (data->cameraDevice == nullptr)
+	else
 	{
-		cerr << "Cannot create the camera device" << endl;
-		return;
+		data->cameraDevice = manager.createCamera("192.168.41.160:5000");
+		if (data->cameraDevice == nullptr)
+		{
+			cerr << "Cannot create the camera device" << endl;
+			return;
+		}
 	}
+
+	std::cout << "1" << std::endl;
+
+
 
 	// IMPORTANT: call the initialize method before working with the camera device
 	if (data->cameraDevice->initialize() != CameraStatus::SUCCESS)
@@ -111,22 +122,28 @@ PicoFlexxEngine::PicoFlexxEngine(const char *calibFilename, const char *deviceUR
 		cerr << "Cannot initialize the camera device" << endl;
 		return;
 	}
-
+	std::cout << "2" << std::endl;
 	// set camera parameters
+	// using parameters for picoFlexx, as the function calls cause frequent errors when using tcp
+	uint16_t height = 171;
+	uint16_t width = 224;
+	float fx = 213.998;
+	float fy = 213.998;
+	float cx = 109.808;
+	float cy = 87.0719;
+	/*
 	LensParameters lensParams;
 	if (data->cameraDevice->getLensParameters(lensParams) != CameraStatus::SUCCESS) {
 		cerr << "Cannot determine lens parameters" << endl;
 		return;
 	}
-
-	this->calib.intrinsics_d.SetFrom(lensParams.focalLength.first, lensParams.focalLength.second,
-		lensParams.principalPoint.first, lensParams.principalPoint.second);
-	this->calib.intrinsics_rgb.SetFrom(lensParams.focalLength.first, lensParams.focalLength.second,
-		lensParams.principalPoint.first, lensParams.principalPoint.second);
+	*/
+	this->calib.intrinsics_d.SetFrom(width, height, fx, fy, cx, cy);
+	this->calib.intrinsics_rgb.SetFrom(width, height, fx, fy, cx, cy);
 
 	royale::Vector<royale::String> useCases;
 	royale::CameraStatus status = data->cameraDevice->getUseCases(useCases);
-
+	/*
 	if (status != CameraStatus::SUCCESS || useCases.empty())
 	{
 		cerr << "No use cases are available" << endl;
@@ -138,6 +155,12 @@ PicoFlexxEngine::PicoFlexxEngine(const char *calibFilename, const char *deviceUR
 	cout << "Available Pico Flexx use cases:" << endl;
 	for (size_t caseId = 0; caseId < useCases.count(); caseId++)
 		cout << useCases[caseId] << endl;
+	*/
+	if (data->cameraDevice->startCapture() != CameraStatus::SUCCESS)
+	{
+		cerr << "Error starting the capturing" << endl;
+		return;
+	}
 
 	// register a data listener
 	if (data->cameraDevice->registerDataListener(data) != CameraStatus::SUCCESS)
@@ -148,18 +171,15 @@ PicoFlexxEngine::PicoFlexxEngine(const char *calibFilename, const char *deviceUR
 
 	// set an operation mode
 	// TODO allow setting this from the command line
+	/*
 	if (data->cameraDevice->setUseCase("MODE_9_10FPS_1000") != CameraStatus::SUCCESS)
 	{
 		cerr << "Error setting use case" << endl;
 		return;
 	}
-
+	*/
 	// start capture mode
-	if (data->cameraDevice->startCapture() != CameraStatus::SUCCESS)
-	{
-		cerr << "Error starting the capturing" << endl;
-		return;
-	}
+
 
 	// waiting for the capture to start and 'data' to be populated
 	ROYALE_SLEEP_MS(1000);

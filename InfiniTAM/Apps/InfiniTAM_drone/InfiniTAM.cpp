@@ -4,15 +4,21 @@
 #include <iostream>
 #include <thread>
 
+#include "DroneEngine.h"
 #include "UIEngine.h"
 
 #include "../../InputSource/OpenNIEngine.h"
+#include "../../InputSource/Kinect2Engine.h"
+#include "../../InputSource/LibUVCEngine.h"
 #include "../../InputSource/PicoFlexxEngine.h"
+#include "../../InputSource/RealSenseEngine.h"
+#include "../../InputSource/LibUVCEngine.h"
+#include "../../InputSource/RealSense2Engine.h"
+#include "../../InputSource/FFMPEGReader.h"
 #include "../../ITMLib/ITMLibDefines.h"
 #include "../../ITMLib/Core/ITMBasicEngine.h"
 #include "../../ITMLib/Core/ITMBasicSurfelEngine.h"
 #include "../../ITMLib/Core/ITMMultiEngine.h"
-#include "../InfiniTAM_drone/DroneEngine.h"
 
 using namespace InfiniTAM::Engine;
 using namespace InputSource;
@@ -40,12 +46,15 @@ static void CreateDefaultImageSource(ImageSourceEngine* & imageSource, IMUSource
 
 	while (imageSource == NULL)
 	{
-		printf("trying PMD PicoFlexx device\n");
-		imageSource = new PicoFlexxEngine(calibFile);
-		if (imageSource->getDepthImageSize().x == 0)
+		if (imageSource == NULL)
 		{
-			delete imageSource;
-			imageSource = NULL;
+			printf("trying PMD PicoFlexx device\n");
+			imageSource = new PicoFlexxEngine(calibFile);
+			if (imageSource->getDepthImageSize().x == 0)
+			{
+				delete imageSource;
+				imageSource = NULL;
+			}
 		}
 	}
 
@@ -111,10 +120,18 @@ try
 		break;
 	}
 
+	DroneEngine::Instance()->Initialise(mainEngine);
+
 
 	UIEngine::Instance()->Initialise(argc, argv, imageSource, imuSource, mainEngine, "./Files/Out", internalSettings->deviceType);
+	std::thread drone_thread(&DroneEngine::Run, DroneEngine::Instance());
 	UIEngine::Instance()->Run();
+	DroneEngine::Instance()->Stop();
 	UIEngine::Instance()->Shutdown();
+
+	drone_thread.join();
+	DroneEngine::Instance()->Shutdown();
+
 
 	delete mainEngine;
 	delete internalSettings;
