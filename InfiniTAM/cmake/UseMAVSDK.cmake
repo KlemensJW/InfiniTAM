@@ -1,0 +1,11 @@
+######################
+# UseMAVSDK.cmake #
+######################
+
+OPTION(WITH_MAVSDK "Build with MAVSDK support?" ON)
+
+IF(WITH_MAVSDK)
+  FIND_PACKAGE(MAVSDK REQUIRED)
+  INCLUDE_DIRECTORIES(${MAVSDK_INCLUDE_DIR})
+  ADD_DEFINITIONS(-DCOMPILE_WITH_MAVSDK)
+ENDIF()
