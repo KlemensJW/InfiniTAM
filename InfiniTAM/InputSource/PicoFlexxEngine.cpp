@@ -104,7 +104,7 @@ PicoFlexxEngine::PicoFlexxEngine(const char *calibFilename, const char *deviceUR
 	}
 	else
 	{
-		data->cameraDevice = manager.createCamera("192.168.41.160:5000");
+		data->cameraDevice = manager.createCamera("192.168.123.237:5000");
 		if (data->cameraDevice == nullptr)
 		{
 			cerr << "Cannot create the camera device" << endl;
@@ -112,7 +112,7 @@ PicoFlexxEngine::PicoFlexxEngine(const char *calibFilename, const char *deviceUR
 		}
 	}
 
-	std::cout << "1" << std::endl;
+	std::cout << "created camera device" << std::endl;
 
 
 
@@ -122,7 +122,7 @@ PicoFlexxEngine::PicoFlexxEngine(const char *calibFilename, const char *deviceUR
 		cerr << "Cannot initialize the camera device" << endl;
 		return;
 	}
-	std::cout << "2" << std::endl;
+	std::cout << "initialized camera" << std::endl;
 	// set camera parameters
 	// using parameters for picoFlexx, as the function calls cause frequent errors when using tcp
 	uint16_t height = 171;
@@ -143,6 +143,12 @@ PicoFlexxEngine::PicoFlexxEngine(const char *calibFilename, const char *deviceUR
 
 	royale::Vector<royale::String> useCases;
 	royale::CameraStatus status = data->cameraDevice->getUseCases(useCases);
+	while (status != CameraStatus::SUCCESS || useCases.empty())
+	{
+		cerr << "No use cases are available" << endl;
+		cerr << "getUseCases() returned: " << getErrorString(status) << endl;
+		status = data->cameraDevice->getUseCases(useCases);
+	}
 	/*
 	if (status != CameraStatus::SUCCESS || useCases.empty())
 	{
@@ -150,12 +156,13 @@ PicoFlexxEngine::PicoFlexxEngine(const char *calibFilename, const char *deviceUR
 		cerr << "getUseCases() returned: " << getErrorString(status) << endl;
 		return;
 	}
+	*/
 
 	// list the available use cases
 	cout << "Available Pico Flexx use cases:" << endl;
 	for (size_t caseId = 0; caseId < useCases.count(); caseId++)
 		cout << useCases[caseId] << endl;
-	*/
+
 	if (data->cameraDevice->startCapture() != CameraStatus::SUCCESS)
 	{
 		cerr << "Error starting the capturing" << endl;
@@ -171,13 +178,14 @@ PicoFlexxEngine::PicoFlexxEngine(const char *calibFilename, const char *deviceUR
 
 	// set an operation mode
 	// TODO allow setting this from the command line
-	/*
-	if (data->cameraDevice->setUseCase("MODE_9_10FPS_1000") != CameraStatus::SUCCESS)
+
+	if (data->cameraDevice->setUseCase("Low_Noise_Extended") != CameraStatus::SUCCESS)
 	{
 		cerr << "Error setting use case" << endl;
 		return;
 	}
-	*/
+	std::cout << "set use Case MODE_9_5FPS_2000" << std::endl;
+
 	// start capture mode
 
 
@@ -189,6 +197,7 @@ PicoFlexxEngine::~PicoFlexxEngine()
 {
 	if (data)
 	{
+		 cout << "stopping capture" << endl;
 		// stop capture mode
 		if (data->cameraDevice)
 			if (data->cameraDevice->stopCapture() != CameraStatus::SUCCESS) cerr << "Error stopping the capturing" << endl;
