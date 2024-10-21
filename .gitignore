@@ -15,6 +15,10 @@ x64/
 /InfiniTAM/Files/Out/*.ppm
 /InfiniTAM/Files/Teddy/Frames
 /InfiniTAM/*.tags
+/InfiniTAM/.idea/
+/InfiniTAM/cmake-build-debug/
+/InfiniTAM/cmake-build-release/
+/InfiniTAM/doxygen-html/
 
 # QtCreator CMake
 CMakeLists.txt.user*
