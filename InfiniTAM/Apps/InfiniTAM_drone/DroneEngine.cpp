@@ -176,6 +176,20 @@ void DroneEngine::Run() {
     }
         */
     while(running) {
+        /*
+        if (!viewsToVisit.empty())
+        {
+            reachView(nextView());
+        }
+        else
+        {
+            // return to starting point
+            reachView({{0.0f, 0.0f, 1.5f}, {0.0f, 0.0f, 0.0f}});
+
+            // stop loop (actually, we should probably stop everything, i.e. the drone Engine and then also the UI Engine and stuff)
+            running = false;
+        }
+        */
         Vector3f translation;
         Vector3f rotation;
         this->mainEngine->GetTrackingState()->pose_d->GetParams(translation, rotation);
@@ -192,4 +206,35 @@ void DroneEngine::Stop() {
 
 void DroneEngine::Shutdown() {
     instance = nullptr;
+}
+
+View DroneEngine::nextView()
+{
+    View next = viewsToVisit.back();
+    viewsToVisit.pop_back();
+    return next;
+}
+
+void DroneEngine::reachView(View aViewToReach)
+{
+    Vector3f translation;
+    Vector3f rotation;
+    this->mainEngine->GetTrackingState()->pose_d->GetParams(translation, rotation);
+
+    View currentView = View{translation, rotation};
+    while (!currentView.isCloseTo(aViewToReach))
+    {
+        // For now:
+        //      just set direction Vector, ignore rotation
+        //      This is bad, because the drone only has collision detection while moving forwards,
+        //      optimally we want the drone to only move forwards
+
+        Vector3f positionDiff = aViewToReach.position - currentView.position;
+        positionDiff = positionDiff.normalised();
+
+        setVelocityCommand(positionDiff.x, positionDiff.y, positionDiff.z, 0.0);
+
+        // sleep 1s so that we don't send to many commands to the drone
+        std::this_thread::sleep_for(std::chrono::duration<int>(1));
+    }
 }
