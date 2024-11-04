@@ -104,7 +104,7 @@ PicoFlexxEngine::PicoFlexxEngine(const char *calibFilename, const char *deviceUR
 	}
 	else
 	{
-		data->cameraDevice = manager.createCamera("192.168.123.237:5000");
+		data->cameraDevice = manager.createCamera("192.168.50.237:5000");
 		if (data->cameraDevice == nullptr)
 		{
 			cerr << "Cannot create the camera device" << endl;
@@ -178,14 +178,14 @@ PicoFlexxEngine::PicoFlexxEngine(const char *calibFilename, const char *deviceUR
 
 	// set an operation mode
 	// TODO allow setting this from the command line
-
-	if (data->cameraDevice->setUseCase("Low_Noise_Extended") != CameraStatus::SUCCESS)
+	/*
+	if (data->cameraDevice->setUseCase("MODE_9_5FPS_2000") != CameraStatus::SUCCESS)
 	{
 		cerr << "Error setting use case" << endl;
 		return;
 	}
 	std::cout << "set use Case MODE_9_5FPS_2000" << std::endl;
-
+	*/
 	// start capture mode
 
 

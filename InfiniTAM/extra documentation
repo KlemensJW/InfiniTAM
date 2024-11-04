@@ -1,0 +1,13 @@
+
+# Hotkeys
+    * w - should save the scene as mesh to disk (this crashes currently)
+    * f - freeview (navigation in freeview is weird)
+
+
+# IP addresses
+The drone program needs two ip addresses to run
+    1. IP address for the royale tcp server (by default this uses port 5000)
+    2. IP address for the DJI Control Server on the android device
+
+    These should be able to set in the InfiniTAM.cpp atleast. Maybe also set them through CLI.
+
