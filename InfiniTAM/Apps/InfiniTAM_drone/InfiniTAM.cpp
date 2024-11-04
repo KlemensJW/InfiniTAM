@@ -24,6 +24,9 @@ using namespace InfiniTAM::Engine;
 using namespace InputSource;
 using namespace ITMLib;
 
+std::string TCP_SERVER_ADDRESS = "192.168.50.237:5000";
+std::string DJI_CONTROL_SERVER_ADDRESS = "128.130.237.30:8080";
+
 /** Create a default source of depth images from a list of command line
     arguments. Typically, @para arg1 would identify the calibration file to
     use, @para arg2 the colour images, @para arg3 the depth images and
@@ -49,7 +52,7 @@ static void CreateDefaultImageSource(ImageSourceEngine* & imageSource, IMUSource
 		if (imageSource == NULL)
 		{
 			printf("trying PMD PicoFlexx device\n");
-			imageSource = new PicoFlexxEngine(calibFile);
+			imageSource = new PicoFlexxEngine(calibFile, &TCP_SERVER_ADDRESS);
 			if (imageSource->getDepthImageSize().x == 0)
 			{
 				delete imageSource;

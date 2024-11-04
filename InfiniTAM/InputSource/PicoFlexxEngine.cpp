@@ -80,7 +80,7 @@ void PicoFlexxEngine::PrivateData::onNewData(const DepthData *data)
 	}
 }
 
-PicoFlexxEngine::PicoFlexxEngine(const char *calibFilename, const char *deviceURI, const bool useInternalCalibration,
+PicoFlexxEngine::PicoFlexxEngine(const char *calibFilename, const std::string *tcpAddress, const char *deviceURI, const bool useInternalCalibration,
 	Vector2i requested_imageSize_rgb, Vector2i requested_imageSize_d)
 	: BaseImageSourceEngine(calibFilename)
 {
@@ -104,7 +104,7 @@ PicoFlexxEngine::PicoFlexxEngine(const char *calibFilename, const char *deviceUR
 	}
 	else
 	{
-		data->cameraDevice = manager.createCamera("192.168.50.237:5000");
+		data->cameraDevice = manager.createCamera(*tcpAddress);
 		if (data->cameraDevice == nullptr)
 		{
 			cerr << "Cannot create the camera device" << endl;
