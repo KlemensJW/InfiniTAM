@@ -124,7 +124,7 @@ try
 	}
 
 	DroneEngine::Instance()->Initialise(mainEngine);
-
+	DroneEngine::SetBaseURL(DJI_CONTROL_SERVER_ADDRESS);
 
 	UIEngine::Instance()->Initialise(argc, argv, imageSource, imuSource, mainEngine, "./Files/Out", internalSettings->deviceType);
 	std::thread drone_thread(&DroneEngine::Run, DroneEngine::Instance());
