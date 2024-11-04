@@ -23,7 +23,6 @@ INCLUDE(${PROJECT_SOURCE_DIR}/cmake/UsePNG.cmake)
 INCLUDE(${PROJECT_SOURCE_DIR}/cmake/UseRealSense.cmake)
 INCLUDE(${PROJECT_SOURCE_DIR}/cmake/UseRealSense2.cmake)
 INCLUDE(${PROJECT_SOURCE_DIR}/cmake/UseUVC.cmake)
-INCLUDE(${PROJECT_SOURCE_DIR}/cmake/UseMAVSDK.cmake)
 INCLUDE(${PROJECT_SOURCE_DIR}/cmake/UseCURL.cmake)
 
 
@@ -68,5 +67,4 @@ INCLUDE(${PROJECT_SOURCE_DIR}/cmake/LinkPNG.cmake)
 INCLUDE(${PROJECT_SOURCE_DIR}/cmake/LinkRealSense.cmake)
 INCLUDE(${PROJECT_SOURCE_DIR}/cmake/LinkRealSense2.cmake)
 INCLUDE(${PROJECT_SOURCE_DIR}/cmake/LinkUVC.cmake)
-INCLUDE(${PROJECT_SOURCE_DIR}/cmake/LinkMAVSDK.cmake)
 INCLUDE(${PROJECT_SOURCE_DIR}/cmake/LinkCURL.cmake)

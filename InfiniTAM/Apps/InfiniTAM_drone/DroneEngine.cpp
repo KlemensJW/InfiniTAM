@@ -4,7 +4,7 @@
 #include <thread>
 #include <curl/curl.h>
 
-std::string DroneEngine::baseURL = "128.130.234.148:8080";
+std::string DroneEngine::baseURL = "128.130.237.30:8080";
 
 // Callback function to handle the data received from the server
 size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
