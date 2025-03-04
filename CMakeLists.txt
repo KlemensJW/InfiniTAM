@@ -16,7 +16,7 @@ include_directories(
 )
 
 
-add_executable(infinitam_ros2_node InfiniTAM/Apps/Inifinitam_ROS2/InfiniTAM_Node.cpp)
+add_executable(infinitam_ros2_node InfiniTAM/Apps/InfiniTAM_ROS2/InfiniTAM_Node.cpp)
 
 target_link_libraries(infinitam_ros2_node 
         ITMLib
