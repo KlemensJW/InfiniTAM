@@ -10,7 +10,7 @@ PROJECT(InfiniTAM)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-cmake_policy(SET CMP0146 OLD)
+# cmake_policy(SET CMP0146 OLD)
 cmake_policy(SET CMP0074 OLD)
 cmake_policy(SET CMP0072 OLD)
 
