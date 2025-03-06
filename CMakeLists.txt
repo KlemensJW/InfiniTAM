@@ -2,7 +2,7 @@
 # Top-level CMakeLists.txt for InfiniTAM #
 ##########################################
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.8)
 
 PROJECT(infinitam)
 
@@ -50,3 +50,43 @@ ADD_SUBDIRECTORY(InputSource)
 ADD_SUBDIRECTORY(ITMLib)
 ADD_SUBDIRECTORY(MiniSlamGraphLib)
 ADD_SUBDIRECTORY(ORUtils)
+
+
+  #####################
+  # Install Libraries #
+  #####################
+
+  install(
+    TARGETS FernRelocLib InputSource ITMLib MiniSlamGraphLib ORUtils
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+  )
+
+  ######################
+  # Install Header Files #
+  ######################
+
+  install(
+    DIRECTORY ${CMAKE_SOURCE_DIR}/ITMLib
+    DESTINATION include
+    FILES_MATCHING PATTERN "*.h"
+  )
+
+  install(
+    DIRECTORY ${CMAKE_SOURCE_DIR}/ORUtils
+    DESTINATION include
+    FILES_MATCHING PATTERN "*.h"
+  )
+
+  install(
+    DIRECTORY ${CMAKE_SOURCE_DIR}/InputSource
+    DESTINATION include
+    FILES_MATCHING PATTERN "*.h"
+  )
+
+  install(
+    DIRECTORY ${CMAKE_SOURCE_DIR}/MiniSlamGraphLib
+    DESTINATION include
+    FILES_MATCHING PATTERN "*.h"
+  )
