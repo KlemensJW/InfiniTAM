@@ -90,3 +90,9 @@ ADD_SUBDIRECTORY(ORUtils)
     DESTINATION include
     FILES_MATCHING PATTERN "*.h"
   )
+
+  install(
+    DIRECTORY ${CMAKE_SOURCE_DIR}/FernRelocLib
+    DESTINATION include
+    FILES_MATCHING PATTERN "*.h"
+  )
